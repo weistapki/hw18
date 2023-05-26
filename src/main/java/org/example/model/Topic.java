@@ -1,12 +1,14 @@
 package org.example.model;
 
+import java.sql.Timestamp;
+
 public class Topic {
     private int id;
     private String name;
     private String description;
-    private int createdAt;
+    private Timestamp createdAt;
 
-    public Topic(int id, String name, String description, int createdAt) {
+    public Topic(int id, String name, String description, Timestamp createdAt) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -37,11 +39,11 @@ public class Topic {
         this.description = description;
     }
 
-    public int getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(int createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 }

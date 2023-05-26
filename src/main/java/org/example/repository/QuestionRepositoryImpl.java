@@ -4,10 +4,7 @@ import org.example.SingletonConnection;
 import org.example.dao.QuestionRepository;
 import org.example.model.Question;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class QuestionRepositoryImpl implements QuestionRepository {
     private final Connection connection;
@@ -26,7 +23,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
         try (PreparedStatement statement = connection.prepareStatement(SAVE_QUERY)) {
             statement.setString(1, question.getText());
             statement.setInt(2, question.getTopicId());
-            statement.setInt(3, question.getCreatedAt());
+            statement.setTimestamp(3, question.getCreatedAt());
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new RuntimeException("Error saving question", e);
@@ -41,7 +38,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
                 if (resultSet.next()) {
                     String text = resultSet.getString("text");
                     int topicId = resultSet.getInt("topic_id");
-                    int createdAt = resultSet.getInt("created_at");
+                    Timestamp createdAt = resultSet.getTimestamp("created_at");
                     return new Question(id, text, topicId, createdAt);
                 }
                 return null;

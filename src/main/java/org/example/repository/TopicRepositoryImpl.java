@@ -4,10 +4,7 @@ import org.example.SingletonConnection;
 import org.example.dao.TopicRepository;
 import org.example.model.Topic;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 
 public class TopicRepositoryImpl implements TopicRepository {
@@ -26,7 +23,7 @@ public class TopicRepositoryImpl implements TopicRepository {
         try (PreparedStatement statement = connection.prepareStatement(SAVE_QUERY)) {
             statement.setString(1, topic.getName());
             statement.setString(2, topic.getDescription());
-            statement.setInt(3, topic.getCreatedAt());
+            statement.setTimestamp(3, topic.getCreatedAt());
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new RuntimeException("Error saving topic", e);
@@ -41,7 +38,7 @@ public class TopicRepositoryImpl implements TopicRepository {
                 if (resultSet.next()) {
                     String name = resultSet.getString("name");
                     String description = resultSet.getString("description");
-                    int createdAt = resultSet.getInt("created_at");
+                    Timestamp createdAt = resultSet.getTimestamp("created_at");
                     return new Topic(id, name, description, createdAt);
                 }
                 return null;
