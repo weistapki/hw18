@@ -5,6 +5,8 @@ import org.example.dao.QuestionRepository;
 import org.example.model.Question;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QuestionRepositoryImpl implements QuestionRepository {
     private final Connection connection;
@@ -12,6 +14,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     private static final String GET_QUERY = "SELECT * FROM question WHERE id = ?";
     private static final String REMOVE_QUERY = "DELETE FROM question WHERE id = ?";
     private static final String UPDATE_QUERY = "UPDATE question SET text = ?, topic_id = ? WHERE id = ?";
+    private static final String GET_ALL_QUERY = "SELECT * FROM question";
 
 
     public QuestionRepositoryImpl() {
@@ -68,5 +71,23 @@ public class QuestionRepositoryImpl implements QuestionRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Error updating question", e);
         }
+    }
+    @Override
+    public List<Question> getAllByTopic() {
+        List<Question> questions = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String text = resultSet.getString("text");
+                    int topicId = resultSet.getInt("topic_id");
+                    Timestamp createdAt = resultSet.getTimestamp("created_at");
+                    questions.add(new Question(id, text, topicId, createdAt));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error getting questions", e);
+        }
+        return questions;
     }
 }
