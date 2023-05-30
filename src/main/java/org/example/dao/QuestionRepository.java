@@ -7,11 +7,8 @@ import java.util.List;
 
 public interface QuestionRepository {
     boolean save(Question question);
-
     Question get(int id);
     List<Question> getAllByTopic();
-
     boolean remove(int id);
-
     boolean update(Question question);
 }

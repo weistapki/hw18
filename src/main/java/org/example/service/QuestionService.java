@@ -22,7 +22,7 @@ public class QuestionService {
      * Gets a random question on the specified topic.
      * If there are no questions on the topic, returns null.
      */
-    public Question getRandomQuestionByTopic(int topicId) {
+    public Question getRandomQuestionByTopic() {
         List<Question> questions = questionRepository.getAllByTopic();
         if (questions.isEmpty()) {
             return null;

@@ -46,4 +46,15 @@ public class Question {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", topicId=" + topicId +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }
+
