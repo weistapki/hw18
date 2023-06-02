@@ -2,8 +2,7 @@ package org.example.repository;
 
 import org.example.SingletonConnection;
 import org.example.dao.TopicRepository;
-import org.example.exaption.IdNotFoundException;
-import org.example.model.Question;
+import org.example.exaption.*;
 import org.example.model.Topic;
 
 import java.sql.*;
@@ -24,7 +23,7 @@ public class TopicRepositoryImpl implements TopicRepository {
     }
 
     @Override
-    public Topic save(Topic topic) throws IdNotFoundException {
+    public Topic save(Topic topic) throws ObjectNotSavedException {
         try (PreparedStatement statement = connection.prepareStatement(SAVE_QUERY, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, topic.getName());
             statement.setString(2, topic.getDescription());
@@ -37,13 +36,15 @@ public class TopicRepositoryImpl implements TopicRepository {
             }
         } catch (SQLException e) {
             System.out.println("Error occurred while saving question: " + e.getMessage());
+            throw new ObjectNotSavedException(e.getMessage());
         }
-        throw new IdNotFoundException();
+        throw new ObjectNotSavedException("Failed to save topic.");
     }
 
 
+
     @Override
-    public Topic get(int id) throws IdNotFoundException {
+    public Topic get(int id) throws NoSuchSQLIdException {
         try (PreparedStatement statement = connection.prepareStatement(GET_QUERY)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -57,35 +58,33 @@ public class TopicRepositoryImpl implements TopicRepository {
             }
         } catch (SQLException e) {
             System.out.println("Error occurred while retrieving topic: " + e.getMessage());
-            throw new IdNotFoundException();
+            throw new NoSuchSQLIdException(e.getMessage());
         }
     }
 
     @Override
-    public boolean remove(int id) throws IdNotFoundException {
+    public boolean remove(int id) throws RecordsNotDeletedException {
         try (PreparedStatement statement = connection.prepareStatement(REMOVE_QUERY)) {
             statement.setInt(1, id);
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Error occurred while removing topic with ID: " + id + ": " + e.getMessage());
-            throw new IdNotFoundException();
+            throw new RecordsNotDeletedException(e.getMessage());
         }
     }
 
     @Override
-    public boolean update(Topic topic) throws IdNotFoundException {
+    public boolean update(Topic topic) throws RecordNotUpdatedException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY)) {
             statement.setString(1, topic.getName());
             statement.setString(2, topic.getDescription());
             statement.setInt(3, topic.getId());
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Error occurred while updating topic: " + e.getMessage());
-            throw new IdNotFoundException();
+            throw new RecordNotUpdatedException(e.getMessage());
         }
     }
     @Override
-    public List<Topic> getAll() throws IdNotFoundException {
+    public List<Topic> getAll() throws TopicsNotRetrievedException {
         List<Topic> topics = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY)) {
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -98,8 +97,7 @@ public class TopicRepositoryImpl implements TopicRepository {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Error occurred while retrieving topics: " + e.getMessage());
-            throw new IdNotFoundException();
+            throw new TopicsNotRetrievedException(e.getMessage());
         }
         return topics;
     }

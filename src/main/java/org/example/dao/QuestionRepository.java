@@ -1,6 +1,5 @@
 package org.example.dao;
 
-import org.example.exaption.IdNotFoundException;
 import org.example.model.Question;
 
 import java.util.List;

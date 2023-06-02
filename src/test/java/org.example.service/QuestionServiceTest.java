@@ -3,7 +3,6 @@ package org.example.service;
 
 import org.example.dao.QuestionRepository;
 import org.example.dao.TopicRepository;
-import org.example.exaption.IdNotFoundException;
 import org.example.fake.FakeQuestionRepository;
 import org.example.fake.FakeTopicRepository;
 import org.example.model.Question;
@@ -28,7 +27,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetRandomQuestionByTopic() throws IdNotFoundException {
+    public void testGetRandomQuestionByTopic() {
         // Create a test topic
         Topic testTopic = new Topic(1, "Technology", "Latest trends in the tech industry", new Timestamp(System.currentTimeMillis()));
         topicRepository.save(testTopic);
@@ -63,7 +62,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetRandomQuestion() throws IdNotFoundException {
+    public void testGetRandomQuestion()  {
         // Create test questions
         Question testQuestion1 = new Question(1, "What is the capital of France?", 1, new Timestamp(System.currentTimeMillis()));
         Question testQuestion2 = new Question(2, "Who painted the Mona Lisa?", 2, new Timestamp(System.currentTimeMillis()));
@@ -92,7 +91,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testAddQuestion() throws IdNotFoundException {
+    public void testAddQuestion()  {
         // Create a test question
         Question testQuestion = new Question(1, "What is your favorite color?", 1, new Timestamp(System.currentTimeMillis()));
 
@@ -115,7 +114,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testRemoveQuestion() throws IdNotFoundException {
+    public void testRemoveQuestion(){
         // Create a test question
         Question testQuestion = new Question(1, "What is the capital of Germany?", 1, new Timestamp(System.currentTimeMillis()));
         questionRepository.save(testQuestion);
@@ -133,7 +132,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetTopics() throws IdNotFoundException {
+    public void testGetTopics() {
         // Create test topics
         Topic topic1 = new Topic(1, "Science", "Exploring the natural world", new Timestamp(System.currentTimeMillis()));
         Topic topic2 = new Topic(2, "History", "Studying the past events", new Timestamp(System.currentTimeMillis()));
@@ -159,7 +158,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testSaveTopic() throws IdNotFoundException {
+    public void testSaveTopic() {
         // Create a test topic
         Topic testTopic = new Topic(1, "Sports", "Various sports disciplines", new Timestamp(System.currentTimeMillis()));
 
@@ -182,7 +181,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetAllQuestions() throws IdNotFoundException {
+    public void testGetAllQuestions() {
         // Create test questions
         Question question1 = new Question(1, "What is the capital of Spain?", 1, new Timestamp(System.currentTimeMillis()));
         Question question2 = new Question(2, "Who is the author of Harry Potter?", 2, new Timestamp(System.currentTimeMillis()));

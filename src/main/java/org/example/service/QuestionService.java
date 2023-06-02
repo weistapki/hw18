@@ -2,7 +2,7 @@ package org.example.service;
 
 import org.example.dao.QuestionRepository;
 import org.example.dao.TopicRepository;
-import org.example.exaption.IdNotFoundException;
+import org.example.exaption.*;
 import org.example.model.Question;
 import org.example.model.Topic;
 
@@ -32,11 +32,12 @@ public class QuestionService {
             }
             int randomIndex = ThreadLocalRandom.current().nextInt(questions.size());
             return questions.get(randomIndex);
-        } catch (IdNotFoundException e) {
+        } catch (QuestionNotFoundException e) {
             System.out.println("Error occurred while getting random question by topic: " + e.getMessage());
             return null;
         }
     }
+
     /**
      * Gets a random question from all questions.
      * If there are no questions, returns null.
@@ -49,11 +50,12 @@ public class QuestionService {
             }
             int randomIndex = ThreadLocalRandom.current().nextInt(questions.size());
             return questions.get(randomIndex);
-        } catch (IdNotFoundException e) {
+        } catch (QuestionListEmptyException e) {
             System.out.println("Error occurred while getting random question: " + e.getMessage());
             return null;
         }
     }
+
 
     /**
      * Adds a new question.
@@ -61,7 +63,7 @@ public class QuestionService {
     public void addQuestion(Question question) {
         try {
             questionRepository.save(question);
-        } catch (IdNotFoundException e) {
+        } catch (QuestionNotFoundException e) {
             System.out.println("Error occurred while adding a question: " + e.getMessage());
         }
     }
@@ -69,12 +71,12 @@ public class QuestionService {
     /**
      * Deletes a question by its ID.
      */
-    public void removeQuestion(int questionId) throws IdNotFoundException {
+    public void removeQuestion(int questionId) throws RecordsNotDeletedException {
         try {
             questionRepository.remove(questionId);
-        } catch (IdNotFoundException e) {
+        } catch (RecordsNotDeletedException e) {
             System.out.println("Error occurred while removing question with ID: " + questionId + ": " + e.getMessage());
-            throw new IdNotFoundException();
+            throw new RecordsNotDeletedException(e.getMessage());
         }
     }
 
@@ -84,7 +86,7 @@ public class QuestionService {
     public List<Topic> getTopics() {
         try {
             return topicRepository.getAll();
-        } catch (IdNotFoundException e) {
+        } catch (TopicsNotRetrievedException e) {
             System.out.println("Error occurred while getting topics: " + e.getMessage());
             return Collections.emptyList();
         }
@@ -96,7 +98,7 @@ public class QuestionService {
     public void saveTopic(Topic topic) {
         try {
             topicRepository.save(topic);
-        } catch (IdNotFoundException e) {
+        } catch (ObjectNotSavedException e) {
             System.out.println("Error occurred while saving a topic: " + e.getMessage());
         }
     }
@@ -107,7 +109,7 @@ public class QuestionService {
     public List<Question> getAllQuestions() {
         try {
             return questionRepository.getAllByTopic();
-        } catch (IdNotFoundException e) {
+        } catch (QuestionsNotRetrievedException e) {
             System.out.println("Error occurred while getting all questions: " + e.getMessage());
             return Collections.emptyList();
         }

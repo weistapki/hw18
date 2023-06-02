@@ -2,9 +2,8 @@ package org.example.repository;
 
 import org.example.SingletonConnection;
 import org.example.dao.QuestionRepository;
-import org.example.exaption.IdNotFoundException;
+import org.example.exaption.*;
 import org.example.model.Question;
-import org.example.model.Topic;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     }
 
     @Override
-    public Question save(Question question) throws IdNotFoundException {
+    public Question save(Question question) throws ObjectNotSavedException {
         try (PreparedStatement statement = connection.prepareStatement(SAVE_QUERY, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, question.getText());
             statement.setInt(2, question.getTopicId());
@@ -37,13 +36,15 @@ public class QuestionRepositoryImpl implements QuestionRepository {
             }
         } catch (SQLException e) {
             System.out.println("Error occurred while saving question: " + e.getMessage());
+            throw new ObjectNotSavedException(e.getMessage());
         }
-        throw new IdNotFoundException();
+        throw new ObjectNotSavedException("Failed to save question.");
     }
 
 
+
     @Override
-    public Question get(int id) throws IdNotFoundException {
+    public Question get(int id) throws NoSuchSQLIdException {
         try (PreparedStatement statement = connection.prepareStatement(GET_QUERY)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -57,21 +58,21 @@ public class QuestionRepositoryImpl implements QuestionRepository {
             }
         } catch (SQLException e) {
             System.out.println("Error occurred while retrieving the question: " + e.getMessage());
-            throw new IdNotFoundException();
+            throw new NoSuchSQLIdException(e.getMessage());
         }
     }
 
     @Override
-    public boolean remove(int id) throws IdNotFoundException {
+    public boolean remove(int id) throws RecordsNotDeletedException {
         try (PreparedStatement statement = connection.prepareStatement(REMOVE_QUERY)) {
             statement.setInt(1, id);
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             System.out.println("Error occurred while removing the question with ID: " + id + ": " + e.getMessage());
-            throw new IdNotFoundException();
+            throw new RecordsNotDeletedException (e.getMessage());
         }
     }
-    public boolean update(Question question) throws IdNotFoundException {
+    public boolean update(Question question) throws RecordNotUpdatedException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY)) {
             statement.setString(1, question.getText());
             statement.setInt(2, question.getTopicId());
@@ -79,11 +80,11 @@ public class QuestionRepositoryImpl implements QuestionRepository {
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             System.out.println("Error occurred while updating the question: " + e.getMessage());
-            throw new IdNotFoundException();
+            throw new RecordNotUpdatedException(e.getMessage());
         }
     }
     @Override
-    public List<Question> getAllByTopic() throws IdNotFoundException {
+    public List<Question> getAllByTopic() throws QuestionsNotRetrievedException{
         List<Question> questions = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY)) {
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -97,7 +98,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
             }
         } catch (SQLException e) {
             System.out.println("Error occurred while retrieving the list of questions: " + e.getMessage());
-            throw new IdNotFoundException();
+            throw new QuestionsNotRetrievedException(e.getMessage());
         }
         return questions;
     }

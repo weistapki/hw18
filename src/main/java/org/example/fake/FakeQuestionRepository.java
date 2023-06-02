@@ -2,7 +2,6 @@ package org.example.fake;
 
 import org.example.dao.QuestionRepository;
 import org.example.model.Question;
-import org.example.model.Topic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
