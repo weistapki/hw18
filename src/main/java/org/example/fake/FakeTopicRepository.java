@@ -16,13 +16,14 @@ public class FakeTopicRepository implements TopicRepository {
         this.topicMap = new HashMap<>();
     }
     @Override
-    public boolean save(Topic topic) {
+    public Topic save(Topic topic) {
         if (topicMap.containsKey(topic.getId())) {
-            return false; // Topic with the same ID already exists
+            return null; // Topic with the same ID already exists
         }
         topicMap.put(topic.getId(), topic);
-        return true;
+        return topic;
     }
+
     @Override
     public Topic get(int id) {
         return topicMap.get(id);

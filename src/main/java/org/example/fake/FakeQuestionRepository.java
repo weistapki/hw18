@@ -2,6 +2,7 @@ package org.example.fake;
 
 import org.example.dao.QuestionRepository;
 import org.example.model.Question;
+import org.example.model.Topic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,14 +15,16 @@ public class FakeQuestionRepository implements QuestionRepository {
     public FakeQuestionRepository() {
         this.questionMap = new HashMap<>();
     }
+
     @Override
-    public boolean save(Question question) {
+    public Question save(Question question) {
         if (questionMap.containsKey(question.getId())) {
-            return false; // Question with the same ID already exists
+            return null; // Question with the same ID already exists
         }
         questionMap.put(question.getId(), question);
-        return true;
+        return question;
     }
+
     @Override
     public Question get(int id) {
         return questionMap.get(id);

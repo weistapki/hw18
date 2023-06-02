@@ -2,9 +2,11 @@ package org.example.service;
 
 import org.example.dao.QuestionRepository;
 import org.example.dao.TopicRepository;
+import org.example.exaption.IdNotFoundException;
 import org.example.model.Question;
 import org.example.model.Topic;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -23,60 +25,93 @@ public class QuestionService {
      * If there are no questions on the topic, returns null.
      */
     public Question getRandomQuestionByTopic() {
-        List<Question> questions = questionRepository.getAllByTopic();
-        if (questions.isEmpty()) {
+        try {
+            List<Question> questions = questionRepository.getAllByTopic();
+            if (questions.isEmpty()) {
+                return null;
+            }
+            int randomIndex = ThreadLocalRandom.current().nextInt(questions.size());
+            return questions.get(randomIndex);
+        } catch (IdNotFoundException e) {
+            System.out.println("Error occurred while getting random question by topic: " + e.getMessage());
             return null;
         }
-        int randomIndex = ThreadLocalRandom.current().nextInt(questions.size());
-        return questions.get(randomIndex);
     }
-
     /**
      * Gets a random question from all questions.
      * If there are no questions, returns null.
      */
     public Question getRandomQuestion() {
-        List<Question> questions = questionRepository.getAllByTopic();
-        if (questions.isEmpty()) {
+        try {
+            List<Question> questions = questionRepository.getAllByTopic();
+            if (questions.isEmpty()) {
+                return null;
+            }
+            int randomIndex = ThreadLocalRandom.current().nextInt(questions.size());
+            return questions.get(randomIndex);
+        } catch (IdNotFoundException e) {
+            System.out.println("Error occurred while getting random question: " + e.getMessage());
             return null;
         }
-        int randomIndex = ThreadLocalRandom.current().nextInt(questions.size());
-        return questions.get(randomIndex);
     }
 
     /**
      * Adds a new question.
      */
     public void addQuestion(Question question) {
-        questionRepository.save(question);
+        try {
+            questionRepository.save(question);
+        } catch (IdNotFoundException e) {
+            System.out.println("Error occurred while adding a question: " + e.getMessage());
+        }
     }
 
     /**
      * Deletes a question by its ID.
      */
-    public void removeQuestion(int questionId) {
-        questionRepository.remove(questionId);
+    public void removeQuestion(int questionId) throws IdNotFoundException {
+        try {
+            questionRepository.remove(questionId);
+        } catch (IdNotFoundException e) {
+            System.out.println("Error occurred while removing question with ID: " + questionId + ": " + e.getMessage());
+            throw new IdNotFoundException();
+        }
     }
 
     /**
      * Gets a list of all topics.
      */
     public List<Topic> getTopics() {
-        return topicRepository.getAll();
+        try {
+            return topicRepository.getAll();
+        } catch (IdNotFoundException e) {
+            System.out.println("Error occurred while getting topics: " + e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     /**
-     * Gets a list of all topics.
+     * Saves a topic.
      */
     public void saveTopic(Topic topic) {
-        topicRepository.save(topic);
+        try {
+            topicRepository.save(topic);
+        } catch (IdNotFoundException e) {
+            System.out.println("Error occurred while saving a topic: " + e.getMessage());
+        }
     }
 
     /**
      * Gets a list of all questions.
      */
     public List<Question> getAllQuestions() {
-        return questionRepository.getAllByTopic();
+        try {
+            return questionRepository.getAllByTopic();
+        } catch (IdNotFoundException e) {
+            System.out.println("Error occurred while getting all questions: " + e.getMessage());
+            return Collections.emptyList();
+        }
     }
 }
+
 

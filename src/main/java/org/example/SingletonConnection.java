@@ -13,12 +13,15 @@ public class SingletonConnection {
     private final String password = "4b3nkM124";
 
     private SingletonConnection() {
+        Connection conn = null;
         try {
-            connection = DriverManager.getConnection(url, username, password);
+            conn = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
             System.err.println("Error occurred during creation of singleton connection instance");
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            System.exit(1); // Terminate the application
         }
+        connection = conn;
     }
 
     public static SingletonConnection getInstance() {
